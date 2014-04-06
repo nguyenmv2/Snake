@@ -50,74 +50,52 @@ public class ManageWorm {
 
 	public boolean move( int direction ) { // did the worm survive the move?
 		WormSegment head = body.getHead();
-		if ( direction == LEFT ){
-			Point dir = new Point( head.getRow(), head.getCol() -1);
-			return finalizeMove(dir);
-		}else if( direction == RIGHT ){
-			Point dir = new Point( head.getRow(), head.getCol() +1);
-			return finalizeMove(dir);
-		}else if( direction == UP ){
-			Point dir = new Point( head.getRow() -1, head.getCol() );
-			return finalizeMove(dir);
-		}else{ 
-			Point dir = new Point( head.getRow() +1, head.getCol() );
-			return finalizeMove(dir);
+		if (direction == UP){
+			Point n = new Point(head.getRow() - 1, head.getCol());
+			return finalizeMove(n);
 		}
-		
-		//for each possible direction create a new Point that will represent
-		// the new head of the worm, call finalizeMove with this Point, and
-		// return what finalizeMove returns (pass finalize's return on up)
-		
+		else if (direction == DOWN){
+			Point n = new Point(head.getRow() + 1, head.getCol());
+			return finalizeMove(n);
+		}
+		else if (direction == LEFT){
+			Point n = new Point(head.getRow(), head.getCol()-1);
+			return finalizeMove(n);
+		}
+		else {
+			Point n = new Point(head.getRow(), head.getCol() + 1);
+			return finalizeMove(n);
+		}		
 	}
-  
-	//WORK HORSE FOR EACH "move".  This needs to determine when the game is over 
-	//(run into wall or worm body).  It needs to add a new worms segment (to the head),
-	// continue to grow if applicable, determine whether the new head "eats"
-	// a munchie and responds correspondingly, and manages the freePool in case the
-	// tail needs to be removed from the worm.
 	public boolean finalizeMove( Point p ) {
-		
-		if( image.isOccupied( p ) ) { return false; }
-		
+		if( image.isOccupied( p ) ) return false;
 		makeWormSegment( p );
-		if( p.equals(munchieLocation) ) { 
-			
+		if ( p.equals(munchieLocation)){
 			score += munchieVal;
-			growthVal += munchieVal;
+			growthVal = munchieVal;
 			munchieVal = getAMunchieValue();
 			munchieLocation = (Point)freePool.get( getAnIdxValue( freePool.size() ) );
 		}
-		if ( growthVal != 0 ){
-			
-			growthVal --; 
-		}else{ 
-			
-			WormSegment temp = body.rmTail();
-			freePool.add(temp.getPoint());
-			image.setValueAt(temp.getPoint(), getAnIdxValue(freePool.size()));
+		if (growthVal != 0){
+			growthVal--;			
+		}
+		else {
+			WormSegment t = body.rmTail();
+			freePool.add(t.getPoint());
+			image.setValueAt(t.getPoint(), getAnIdxValue(freePool.size()));
 		}
 		return true;
-		//complete this method.
 	}
 
 	private void makeFree( Point p ) {
-		
 		freePool.add(p);
-		image.setValueAt(p, freePool.size()-1 );
-		//add this Point to the "freePool" arraylist and its location 
-		// to the ScreenBuffer's reference to this Point
+		image.setValueAt(p, getAnIdxValue(freePool.size()) );
 	}
   
-	private void makeWormSegment( Point p  ) {
-		
-		body.addToHead(new WormSegment(p));
+	private void makeWormSegment( Point p  ) { 
+		body.addToHead(new WormSegment(p)) ;
 		freePool.remove(p);
-		image.makeWormSegment(p);
-		
-		
-	// worm must grow from its head, and both the "freePool" and "image" states 
-	//  MUST BE CAREFULLY UPDATED 
-
+		image.setValueAt(p, -1);
    }
 
 }

@@ -22,19 +22,23 @@ public class Worm extends JFrame implements KeyListener, ActionListener {
 		if( ! wormAlive ) return;
 		int kc = ke.getKeyCode();
 		if( kc == KeyEvent.VK_UP ) { 
-			wormAlive = worm.move( ManageWorm.UP ); 
+			wormAlive = worm.move( ManageWorm.UP );
+			direction = ManageWorm.UP;
 			repaint(); 
 		}
 		else if( kc == KeyEvent.VK_DOWN ) {
 			wormAlive = worm.move( ManageWorm.DOWN ); 
+			direction = ManageWorm.DOWN;
 			repaint();
 		}
 		else if( kc == KeyEvent.VK_LEFT ) {
 			wormAlive = worm.move( ManageWorm.LEFT );
+			direction = ManageWorm.LEFT;
 			repaint();
 		}
 		else if( kc == KeyEvent.VK_RIGHT ) {
 			wormAlive = worm.move( ManageWorm.RIGHT );
+			direction = ManageWorm.RIGHT;
 			repaint();
 		}
 	}
@@ -88,13 +92,11 @@ public class Worm extends JFrame implements KeyListener, ActionListener {
 		//draw worm
 		g.setColor( Color.red );
 		body.start();
-		while ( body.moreElements() ){
-
+		while (body.moreElements()){
 			WormSegment p = body.nextElement();
-			p.display(g, p.getCol()* colWidth, p.getRow()*rowHeight, 10 , 10 );		}
-		//COMPLETE THIS PORTION OF THE METHOD USING THE WORMBODY'S ITERATOR TO DRAW THE
-		// WORM ON THE SCREEN.
-		
+			p.display(g, p.getCol()* colWidth, p.getRow()*rowHeight, 10 , 10 );
+			
+		}
 		
 		//write the munchie value at the appropriate location
 		Point p = worm.getMunchieLocation();
@@ -105,6 +107,7 @@ public class Worm extends JFrame implements KeyListener, ActionListener {
 		
 		timer = new Timer(500, this);
 		timer.start();
+		
 	}
 	
 	public void actionPerformed( ActionEvent ae ) {
